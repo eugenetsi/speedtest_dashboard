@@ -130,3 +130,6 @@ dmypy.json
 
 # DB
 SPEEDTEST_DB
+
+# macos
+.DS_Store
