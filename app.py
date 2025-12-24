@@ -18,8 +18,10 @@ st.set_page_config(
     layout="wide",
 )
 
+COLUMNS = ['Ping', 'Down', 'Up', 'Timestamp']
+
 # get first datapoint for init
-df = pd.DataFrame(get_data(), columns=['Ping', 'Down', 'Up', 'Timestamp'])
+df = pd.DataFrame(get_data(), columns=COLUMNS)
 # create table
 conn, cursor = create_table()
 # send data to table
@@ -37,44 +39,55 @@ prev = 0
 prev_mean = 0
 while True:
     with placeholder.container():
-        # create three columns
-        kpi1, kpi2 = st.columns(2)
+        if df.empty:
+            st.warning(
+                "No speedtest data available yet. Ensure the `speedtest` CLI is installed and reachable.",
+                icon="⚠️",
+            )
+            st.dataframe(df)
+        else:
+            # create two columns
+            kpi1, kpi2 = st.columns(2)
 
-        # average with delta
-        kpi1.metric(
-            label="Average Download",
-            value=round(df.Down.astype('float').mean(), 2),
-            delta=round(df.Down.astype('float').mean() - prev_mean, 2),)
+            # average with delta
+            kpi1.metric(
+                label="Average Download",
+                value=round(df.Down.astype('float').mean(), 2),
+                delta=round(df.Down.astype('float').mean() - prev_mean, 2),)
 
-        # current with delta
-        kpi2.metric(
-            label="Current Download",
-            value=round(float(df.loc[len(df.index) - 1].Down), 2),
-            delta=round(float(df.loc[len(df.index) - 1].Down) - prev, 2),)
+            # current with delta
+            kpi2.metric(
+                label="Current Download",
+                value=round(float(df.loc[len(df.index) - 1].Down), 2),
+                delta=round(float(df.loc[len(df.index) - 1].Down) - prev, 2),)
 
-        # down/up chart
-        with kpi1:
-            st.markdown("### Speed chart")
-            fig = px.line(
-                data_frame=df, y=[df.Down, df.Up], x=df.Timestamp)
-            st.write(fig)
-            
-        # ping chart
-        with kpi2:
-            st.markdown("### Ping chart")
-            fig = px.line(
-                data_frame=df, y=df.Ping, x=df.Timestamp)
-            st.write(fig)
+            # down/up chart
+            with kpi1:
+                st.markdown("### Speed chart")
+                fig = px.line(
+                    data_frame=df, y=[df.Down, df.Up], x=df.Timestamp)
+                st.write(fig)
+                
+            # ping chart
+            with kpi2:
+                st.markdown("### Ping chart")
+                fig = px.line(
+                    data_frame=df, y=df.Ping, x=df.Timestamp)
+                st.write(fig)
 
-        # all data
-        st.markdown("### Detailed Data View")
-        st.dataframe(df)
+            # all data
+            st.markdown("### Detailed Data View")
+            st.dataframe(df)
         time.sleep(1)
 
         if len(df.index) > 1:
             prev = float(df.loc[len(df.index) - 2].Down)
-        prev_mean = df.Down.astype('float').mean()
-        df = df.append(pd.DataFrame(get_data(), columns=['Ping', 'Down', 'Up', 'Timestamp']), ignore_index=True)
+        if not df.empty:
+            prev_mean = df.Down.astype('float').mean()
+        new_rows = get_data()
+        if not new_rows:
+            continue
+        df = pd.concat([df, pd.DataFrame(new_rows, columns=COLUMNS)], ignore_index=True)
         # update db
         df.to_sql(name=TABLE_NAME, if_exists='replace', con=conn)
         print_db(DB_NAME, TABLE_NAME)

@@ -15,7 +15,7 @@ def get_logger():
     FFORMAT = "%(module)s:%(name)s:%(funcName)s: %(message)s"
     DFORMAT = "%Y:%m:%d::%H:%M:%S"
     logging.basicConfig(
-        level="DEBUG", format=FFORMAT, datefmt=DFORMAT, handlers=[RichHandler()]
+        level="INFO", format=FFORMAT, datefmt=DFORMAT, handlers=[RichHandler()]
     )
     _logger = logging.getLogger(__name__)
     return _logger

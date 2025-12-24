@@ -12,10 +12,17 @@ Internet speed continuous monitoring with streamlit dashboard.
 
 ## Usage <a name="usage"></a>
 
-To install the package requirements that are needed, run the following (ideally inside a venv):
+Create and activate a virtual environment (any directory works; `.venv` is shown here):
+```lang-bash
+>>> python3 -m venv .venv
+>>> source .venv/bin/activate
+```
+Install the requirements inside that environment:
 ```lang-bash
 >>> pip install -r requirements.txt 
 ```
+Install the `speedtest-cli` binary (or Ookla CLI) separately if it is not already present; the app invokes `speedtest --secure` under the hood to avoid the common HTTP 403 issue.
+For faster Streamlit hot-reload performance, install `watchdog` as well (`pip install watchdog`).
 Then, to run the dashboard:
 ```lang-bash
 >>> streamlit run app.py 
@@ -43,4 +50,3 @@ The app can be stopepd with Ctrl-C, as it will continue indefinitely as well as 
 | WARNING      | An indication that something unexpected happened, or indicative of some problem in the near future (e.g. ‘disk space low’). The software is still working as expected.|
 | ERROR   | Due to a more serious problem, the software has not been able to perform some function.|
 | CRITICAL      | A serious error, indicating that the program itself may be unable to continue running.|
-
