@@ -1,7 +1,7 @@
 # speedtest_dashboard
 Internet speed continuous monitoring with streamlit dashboard.
 
-[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger) [![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-360/)
+[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger) [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
 
 ## Table of Contents
 1. [Usage](#usage)
@@ -12,9 +12,9 @@ Internet speed continuous monitoring with streamlit dashboard.
 
 ## Usage <a name="usage"></a>
 
-Create and activate a virtual environment (any directory works; `.venv` is shown here):
+Use Python 3.11 and create and activate a virtual environment (any directory works; `.venv` is shown here):
 ```lang-bash
->>> python3 -m venv .venv
+>>> python3.11 -m venv .venv
 >>> source .venv/bin/activate
 ```
 Install the requirements inside that environment:
